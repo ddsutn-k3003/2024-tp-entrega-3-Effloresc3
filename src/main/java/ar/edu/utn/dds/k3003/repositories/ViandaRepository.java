@@ -24,16 +24,19 @@ public class ViandaRepository {
     this.entityManager = entityManager;
   }
 
-  public Vianda save(final Vianda vianda)
-      throws NoSuchElementException, ConstraintViolationException {
+  public Vianda save(Vianda vianda) throws NoSuchElementException, ConstraintViolationException {
     EntityTransaction transaction = null;
     try {
+      transaction = entityManager.getTransaction();
+      transaction.begin();
       if (Objects.isNull(vianda.getId())) {
-        transaction = entityManager.getTransaction();
-        transaction.begin();
         entityManager.persist(vianda);
-        transaction.commit();
       }
+      else {
+        vianda = entityManager.merge(vianda);
+      }
+      transaction.commit();
+
     } catch (PersistenceException pe) {
       if (pe.getCause() instanceof ConstraintViolationException) {
         if (Objects.nonNull(transaction)) {
