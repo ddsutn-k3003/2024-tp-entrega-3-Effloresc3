@@ -4,6 +4,8 @@ import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,6 +27,7 @@ public class Vianda {
   private Long colaboradorId;
   @Column(name = "heladeraId")
   private Integer heladeraId;
+  @Enumerated(EnumType.STRING)
   @Column(name = "estado")
   private EstadoViandaEnum estado;
   @Column(name = "fechaElaboracion")
