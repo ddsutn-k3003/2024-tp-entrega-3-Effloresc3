@@ -28,15 +28,21 @@ public class WebApp {
     var viandasController = new ViandaController(fachada);
 
     var app = Javalin.create()
+        .exception(RuntimeException.class, (e, ctx) -> {
+          ctx.status(400)
+              .result(e.getMessage());
+        })
         .start(port);
 
-
     app.post("/viandas", viandasController::agregarVianda);
-    app.delete("/viandas",viandasController::limpiarDB);
-    app.get("/viandas/search/findByColaboradorIdAndAnioAndMes", viandasController::findByColaboradorIdAndAnioAndMes);
+    app.delete("/viandas", viandasController::limpiarDB);
+    app.get(
+        "/viandas/search/findByColaboradorIdAndAnioAndMes",
+        viandasController::findByColaboradorIdAndAnioAndMes
+    );
     app.get("/viandas/{qr}", viandasController::buscarPorQR);
     app.get("/viandas/{qr}/vencida", viandasController::evaluarVencimiento);
-    app.patch("/viandas/{qrVianda}",viandasController::modificarHeladera);
+    app.patch("/viandas/{qrVianda}", viandasController::modificarHeladera);
 
   }
 
