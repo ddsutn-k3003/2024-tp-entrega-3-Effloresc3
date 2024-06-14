@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.exception.ConstraintViolationException;
 
 @Getter
 @Setter
@@ -25,7 +26,8 @@ public class ViandaRepository {
     this.entityManager = entityManager;
   }
 
-  public Vianda save(final Vianda vianda) throws NoSuchElementException {
+  public Vianda save(final Vianda vianda) throws NoSuchElementException,
+      ConstraintViolationException {
     if (Objects.isNull(vianda.getId())) {
       entityManager.getTransaction().begin();
       entityManager.persist(vianda);
