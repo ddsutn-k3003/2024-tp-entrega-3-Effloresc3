@@ -82,4 +82,9 @@ public class Fachada implements FachadaViandas {
     viandaEncontrada = viandaRepository.save(viandaEncontrada);
     return viandaMapper.map(viandaEncontrada);
   }
+
+  public void clearDB(){
+    viandaRepository.clearDB();
+  }
+
 }

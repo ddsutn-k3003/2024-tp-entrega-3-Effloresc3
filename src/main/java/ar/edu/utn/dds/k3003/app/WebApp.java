@@ -32,6 +32,7 @@ public class WebApp {
 
 
     app.post("/viandas", viandasController::agregarVianda);
+    app.delete("/viandas",viandasController::limpiarDB);
     app.get("/viandas/search/findByColaboradorIdAndAnioAndMes", viandasController::findByColaboradorIdAndAnioAndMes);
     app.get("/viandas/{qr}", viandasController::buscarPorQR);
     app.get("/viandas/{qr}/vencida", viandasController::evaluarVencimiento);

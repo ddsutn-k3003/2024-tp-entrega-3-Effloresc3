@@ -70,6 +70,10 @@ public class ViandaController {
 
     var viandaDTO = this.fachada.modificarHeladera(qr, heladeraId);
     context.json(viandaDTO);
+  }
 
+  public void limpiarDB(Context context){
+      fachada.clearDB();
+      context.status(HttpStatus.NO_CONTENT);
   }
 }
