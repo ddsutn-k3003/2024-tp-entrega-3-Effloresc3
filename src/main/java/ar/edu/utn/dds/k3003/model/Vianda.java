@@ -21,16 +21,16 @@ public class Vianda {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @Column(name = "qr")
+  @Column(name = "qr",nullable = false,unique = true)
   private String qr;
-  @Column(name = "colaboradorId")
+  @Column(name = "colaboradorId",nullable = false)
   private Long colaboradorId;
-  @Column(name = "heladeraId")
+  @Column(name = "heladeraId",nullable = false)
   private Integer heladeraId;
   @Enumerated(EnumType.STRING)
-  @Column(name = "estado")
+  @Column(name = "estado",nullable = false)
   private EstadoViandaEnum estado;
-  @Column(name = "fechaElaboracion")
+  @Column(name = "fechaElaboracion",nullable = false)
   private LocalDateTime fechaElaboracion;
 
   protected Vianda() {
