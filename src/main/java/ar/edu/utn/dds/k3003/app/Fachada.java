@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 
 public class Fachada implements FachadaViandas {
@@ -32,8 +33,8 @@ public class Fachada implements FachadaViandas {
     try {
       ViandaDTO viandaConQr = buscarXQR(viandaDTO.getCodigoQR());
       throw new IllegalArgumentException(
-          "A Vianda with the same QR (" + viandaDTO.getCodigoQR() + ") already exists.");
-    } catch (NoSuchElementException e) {
+          "Ya existe una vianda con el qr:" + viandaDTO.getCodigoQR());
+    } catch (NoResultException e) {
       Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getColaboradorId(),
           viandaDTO.getHeladeraId(), viandaDTO.getEstado(), viandaDTO.getFechaElaboracion()
       );
