@@ -9,6 +9,7 @@ import ar.edu.utn.dds.k3003.repositories.ViandaMapper;
 import ar.edu.utn.dds.k3003.repositories.ViandaRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -29,6 +30,11 @@ public class Fachada implements FachadaViandas {
 
   @Override
   public ViandaDTO agregar(ViandaDTO viandaDTO) {
+    ViandaDTO viandaConQr = buscarXQR(viandaDTO.getCodigoQR());
+    if (Objects.nonNull(viandaConQr)) {
+      throw new IllegalArgumentException("A Vianda with the same QR ("+ viandaDTO.getCodigoQR() +") already "
+          + "exists.");
+    }
     Vianda vianda =
         new Vianda(
             viandaDTO.getCodigoQR(),
