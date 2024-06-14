@@ -9,7 +9,6 @@ import ar.edu.utn.dds.k3003.repositories.ViandaMapper;
 import ar.edu.utn.dds.k3003.repositories.ViandaRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -30,25 +29,25 @@ public class Fachada implements FachadaViandas {
 
   @Override
   public ViandaDTO agregar(ViandaDTO viandaDTO) {
-    ViandaDTO viandaConQr = buscarXQR(viandaDTO.getCodigoQR());
-    if (Objects.nonNull(viandaConQr)) {
-      throw new IllegalArgumentException("A Vianda with the same QR ("+ viandaDTO.getCodigoQR() +") already "
-          + "exists.");
+    try {
+      ViandaDTO viandaConQr = buscarXQR(viandaDTO.getCodigoQR());
+      throw new IllegalArgumentException(
+          "A Vianda with the same QR (" + viandaDTO.getCodigoQR() + ") already exists.");
+    } catch (NoSuchElementException e) {
+      Vianda vianda = new Vianda(viandaDTO.getCodigoQR(), viandaDTO.getColaboradorId(),
+          viandaDTO.getHeladeraId(), viandaDTO.getEstado(), viandaDTO.getFechaElaboracion()
+      );
+
+      vianda = this.viandaRepository.save(vianda);
+      return viandaMapper.map(vianda);
     }
-    Vianda vianda =
-        new Vianda(
-            viandaDTO.getCodigoQR(),
-            viandaDTO.getColaboradorId(),
-            viandaDTO.getHeladeraId(),
-            viandaDTO.getEstado(),
-            viandaDTO.getFechaElaboracion());
-    vianda = this.viandaRepository.save(vianda);
-    return viandaMapper.map(vianda);
   }
 
   @Override
-  public ViandaDTO modificarEstado(String qr, EstadoViandaEnum estadoViandaEnum)
-      throws NoSuchElementException {
+  public ViandaDTO modificarEstado(
+      String qr,
+      EstadoViandaEnum estadoViandaEnum
+  ) throws NoSuchElementException {
     Vianda viandaEncontrada = viandaRepository.findByQr(qr);
     viandaEncontrada.setEstado(estadoViandaEnum);
     viandaEncontrada = viandaRepository.save(viandaEncontrada);
@@ -56,9 +55,13 @@ public class Fachada implements FachadaViandas {
   }
 
   @Override
-  public List<ViandaDTO> viandasDeColaborador(Long colaboradorId, Integer mes, Integer anio)
-      throws NoSuchElementException {
-    return viandaRepository.findByCollaboratorIdAndYearAndMonth(colaboradorId, mes, anio).stream()
+  public List<ViandaDTO> viandasDeColaborador(
+      Long colaboradorId,
+      Integer mes,
+      Integer anio
+  ) throws NoSuchElementException {
+    return viandaRepository.findByCollaboratorIdAndYearAndMonth(colaboradorId, mes, anio)
+        .stream()
         .map(viandaMapper::map)
         .toList();
   }
@@ -77,19 +80,23 @@ public class Fachada implements FachadaViandas {
   @Override
   public boolean evaluarVencimiento(String qr) throws NoSuchElementException {
     Vianda viandaEncontrada = viandaRepository.findByQr(qr);
-    return fachadaHeladeras.obtenerTemperaturas(viandaEncontrada.getHeladeraId()).stream()
+    return fachadaHeladeras.obtenerTemperaturas(viandaEncontrada.getHeladeraId())
+        .stream()
         .anyMatch(temperaturaDTO -> temperaturaDTO.getTemperatura() >= 5);
   }
 
   @Override
-  public ViandaDTO modificarHeladera(String qr, int nuevaHeladera) {
+  public ViandaDTO modificarHeladera(
+      String qr,
+      int nuevaHeladera
+  ) {
     Vianda viandaEncontrada = viandaRepository.findByQr(qr);
     viandaEncontrada.setHeladeraId(nuevaHeladera);
     viandaEncontrada = viandaRepository.save(viandaEncontrada);
     return viandaMapper.map(viandaEncontrada);
   }
 
-  public void clearDB(){
+  public void clearDB() {
     viandaRepository.clearDB();
   }
 
