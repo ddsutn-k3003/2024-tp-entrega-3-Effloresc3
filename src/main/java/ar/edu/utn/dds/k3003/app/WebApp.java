@@ -28,10 +28,6 @@ public class WebApp {
     var viandasController = new ViandaController(fachada);
 
     var app = Javalin.create()
-        .exception(RuntimeException.class, (e, ctx) -> {
-          ctx.status(400)
-              .result(e.getMessage());
-        })
         .start(port);
 
     app.post("/viandas", viandasController::agregarVianda);
